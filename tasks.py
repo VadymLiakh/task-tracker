@@ -1,8 +1,13 @@
 """Task Tracker — консольний менеджер задач."""
 
 import argparse
+import sys
+from pathlib import Path
 
-from tracker.storage import load_tasks, save_tasks
+sys.path.insert(0, str(Path(__file__).resolve().parent / "libs" / "console-utils"))
+
+from console_utils import format_table  # noqa: E402
+from tracker.storage import load_tasks, save_tasks  # noqa: E402
 
 
 def cmd_add(args):
@@ -18,9 +23,8 @@ def cmd_list(args):
     if not tasks:
         print("Список задач порожній.")
         return
-    for t in tasks:
-        mark = "x" if t["done"] else " "
-        print(f"[{mark}] #{t['id']} {t['title']}")
+    rows = [(t["id"], t["title"], "так" if t["done"] else "ні") for t in tasks]
+    print(format_table(["ID", "Задача", "Виконано"], rows))
 
 
 def cmd_done(args):
