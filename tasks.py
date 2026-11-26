@@ -34,6 +34,16 @@ def cmd_done(args):
     print(f"Задачу #{args.id} не знайдено.")
 
 
+def cmd_remove(args):
+    tasks = load_tasks()
+    left = [t for t in tasks if t["id"] != args.id]
+    if len(left) == len(tasks):
+        print(f"Задачу #{args.id} не знайдено.")
+        return
+    save_tasks(left)
+    print(f"Задачу #{args.id} видалено.")
+
+
 def build_parser():
     parser = argparse.ArgumentParser(description="Консольний менеджер задач")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -48,6 +58,10 @@ def build_parser():
     p = sub.add_parser("done", help="позначити задачу виконаною")
     p.add_argument("id", type=int)
     p.set_defaults(func=cmd_done)
+
+    p = sub.add_parser("remove", help="видалити задачу")
+    p.add_argument("id", type=int)
+    p.set_defaults(func=cmd_remove)
     return parser
 
 
