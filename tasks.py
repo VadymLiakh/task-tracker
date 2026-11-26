@@ -6,7 +6,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "libs" / "console-utils"))
 
-from console_utils import format_table  # noqa: E402
+from console_utils import colorize, format_table  # noqa: E402
+from tracker.stats import get_stats  # noqa: E402
 from tracker.storage import load_tasks, save_tasks  # noqa: E402
 
 
@@ -48,6 +49,13 @@ def cmd_remove(args):
     print(f"Задачу #{args.id} видалено.")
 
 
+def cmd_stats(args):
+    s = get_stats(load_tasks())
+    print(f"Усього задач: {s['total']}")
+    print(colorize(f"Виконано: {s['done']} ({s['percent']}%)", "green"))
+    print(colorize(f"Залишилось: {s['left']}", "yellow"))
+
+
 def build_parser():
     parser = argparse.ArgumentParser(description="Консольний менеджер задач")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -66,6 +74,9 @@ def build_parser():
     p = sub.add_parser("remove", help="видалити задачу")
     p.add_argument("id", type=int)
     p.set_defaults(func=cmd_remove)
+
+    p = sub.add_parser("stats", help="показати статистику")
+    p.set_defaults(func=cmd_stats)
     return parser
 
 
