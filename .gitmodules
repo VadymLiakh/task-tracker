@@ -1,0 +1,3 @@
+[submodule "libs/console-utils"]
+	path = libs/console-utils
+	url = https://github.com/VadymLiakh/console-utils.git
